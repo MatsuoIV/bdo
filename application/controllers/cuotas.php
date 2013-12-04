@@ -33,8 +33,18 @@ class Cuotas extends BDO_Controller {
 	}
 
 	//reporte de cuotas: alertas
-	function report(){
-		$this->load->view('cuotas/cuotas_pendientes');
+	function report($anio = "2012"){
+		$this->load->model('cuotas_mdl');
+		if(!$_POST){			
+			$data['facturas'] = $this->cuotas_mdl->reporte($anio);
+			//var_dump($data);
+		}else{
+			//var_dump($_POST["campania_id"]);
+			$data['facturas'] = $this->cuotas_mdl->reporte($_POST["campania_id"]);
+			//var_dump($data);
+			//$this->load->view('cuotas/cuotas_pendientes',$data);
+		}
+		$this->load->view('cuotas/cuotas_pendientes',$data);
 	}
 
 	function eliminar($servicio_id,$cuota_id) {

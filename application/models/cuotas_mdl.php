@@ -79,6 +79,17 @@ class Cuotas_mdl extends MY_Model {
 		return $this->db->query($sql, array($fecha))->result_array();
 	}
 
+	function reporte($ano){
+		$sql = "SELECT * FROM factura
+		LEFT JOIN cliente ON factura.cliente_id=cliente.id
+        LEFT JOIN factura_grupo ON factura.factura_grupo_id = factura_grupo.id
+        LEFT JOIN factura_estado ON factura.factura_estado_id = factura_estado.id
+        INNER JOIN cuota_factura ON cuota_factura.factura_id = factura.id
+        LEFT JOIN tipocomprobante ON factura.tipocomprobante_id = tipocomprobante.id
+        LEFT JOIN moneda ON factura.moneda_id= moneda.id
+        WHERE `fecha_registro` BETWEEN '".$ano."-01-01' AND '".$ano."-12-31'";
+		return $this->db->query($sql)->result_array();
+	}
 	/*
 	function dameCuotasEnPago(){
 		return $this->db->query("SELECT c.*, s.codigo, s.cliente_id, cl.razonsocial FROM cuota AS c
