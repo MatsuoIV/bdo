@@ -15,7 +15,7 @@
 			<th scope="col">Estado</th>
 			<th scope="col">Factura</th>
 			<th scope="col">Fecha</th>
-			<th scope="col">Codigo</th>
+			<!--<th scope="col">Codigo</th>-->
 			<th scope="col">Cliente</th>            
 			<th scope="col">Monto</th>                        
 			<th scope="col" class="last">Acciones</th>
@@ -31,7 +31,7 @@
 		<td><?php echo $factura->factura_estado_denominacion; ?></td>
 		<td><?php echo $factura->tipocomprobante_codigo.".".$factura->factura_grupo_prefijo.".".$factura->factura_numero; ?></td>
 		<td><?php echo formato_fecha($factura->factura_fecha_ingreso); ?></td>
-		<td><?php echo $factura->servicio_codigo; ?></td>														
+		<!--<td><?php echo $factura->servicio_codigo; ?></td>-->
 		<td><?php echo anchor('clientes/details/cliente_id/'.$factura->cliente_id,$factura->cliente_razonsocial_fact); ?></td>
 		<td><?php echo $factura->moneda_simbolo." ".formato_numero($factura->factura_montos_total); ?></td>
 		<td class="last">

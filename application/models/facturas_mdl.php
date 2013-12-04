@@ -2,6 +2,7 @@
 
 class Facturas_mdl extends MY_Model {
 
+    /*
     public function __construct() {
         parent::__construct();
         $this->table_name = 'factura';
@@ -38,6 +39,58 @@ class Facturas_mdl extends MY_Model {
 			'moneda'	=>	'factura.moneda_id= moneda.id'	
         );
     }
+    */
+
+    public function __construct() {
+        parent::__construct();
+        $this->table_name = 'factura';
+        $this->primary_key = 'factura.id';
+        //$this->order_by = 'factura.factura_fecha_ingreso DESC, factura.factura_id DESC';
+        $this->order_by = 'factura.fecha_registro DESC, factura.id DESC';
+        $this->select_fields = 
+            "SQL_CALC_FOUND_ROWS
+            factura.id as factura_id,
+            cliente.id as cliente_id,
+            factura.numero as factura_numero,
+            factura.factura_grupo_id as factura_grupo_prefijo,
+            factura_estado.denominacion as factura_estado_denominacion,
+            factura.fecha_registro as factura_fecha_ingreso,
+
+            tipocomprobante.codigo as tipocomprobante_codigo,
+            cliente.razonsocial as cliente_razonsocial_fact,
+            moneda.simbolo as moneda_simbolo,
+            factura.monto_total as factura_montos_total
+            ";
+
+        $this->joins = array(
+            'factura_estado' => array(
+                //'factura_estado.factura_estado_id = factura.factura_estado_id',
+                'factura_estado.id = factura.factura_estado_id',
+                'left'
+            ),
+            'users' => array(
+                'users.id= factura.personal_id',
+                'left'
+            ),          
+            'cliente' => array(
+                'cliente.id = factura.cliente_id',
+                'left'
+            ),
+            //'cliente'=> array(
+            //    'servicios.Cliente_id = cliente.id',
+            //    'left'
+            //),
+            'factura_grupo'=> array(
+                'factura.factura_grupo_id = factura_grupo.id',
+                'left'
+            ),
+            'tipocomprobante' => array(
+                'factura.tipocomprobante_id = tipocomprobante.id',
+                'left'
+            ),
+            'moneda' => 'factura.moneda_id= moneda.id',
+        );
+    }    
 
     public function dameFacturasDeServicio($servicio_id){
         $r = $this->db->query("SELECT DISTINCT(factura_id) FROM cuota_factura

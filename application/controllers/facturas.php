@@ -55,9 +55,10 @@ class Facturas extends BDO_Controller {
                 $params['order_by'] = 'factura.fecha_registro DESC, factura.id DESC';
         }
         $facturas = $this->facturas_mdl->get($params);
+
         $data = array(
             'facturas'		=>	$facturas,
-            'sort_links'	=>	TRUE
+            'sort_links'	=>	FALSE, // NO LO ACTIVES!, no hay coherencia con los filtros.
         );
         $this->load->view('facturas/facturas_list', $data);
     }
@@ -146,6 +147,8 @@ class Facturas extends BDO_Controller {
             $data['cliente_id'] = $this->input->post('compania_id');
             $data['factura_grupo_id'] = $this->input->post('factura_grupo_id');
             $data['moneda_id'] = $this->input->post('moneda_id');
+            $data['factura_estado_id'] = 1; //factura_estado_id
+            $data['tipocomprobante_id'] = 1; // Mira la tabla: tipocomprobante
 
             $change = $this->db->insert('factura', $data);
             $factura_id = $this->db->insert_id();
