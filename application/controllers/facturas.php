@@ -6,7 +6,10 @@ class Facturas extends BDO_Controller {
 		parent::__construct();
 		$this->load->model('facturas_mdl');
 		$this->load->helper(array('text', 'bdo_app', 'form'));
+        $this->output->enable_profiler(); //Profiler
 	}
+
+    // GET /facturas
 
     function index() {
         $this->_post_handler();
@@ -60,6 +63,7 @@ class Facturas extends BDO_Controller {
     }
 
     function cuotas_de_servicio($servicio_id=0){
+        $this->output->enable_profiler(FALSE);
         $this->load->model('cuotas_mdl');
         $data = array();
         $data['cuotas'] = $this->cuotas_mdl->dameCuotasDeServicio($servicio_id, 'c.id, c.fecha, c.monto, c.saldo, s.codigo', 'AND c.saldo > 0');
@@ -68,14 +72,14 @@ class Facturas extends BDO_Controller {
     }
 
     function cuota_especifica($servicio_id = 0, $cuota_id = 0){
+        $this->output->enable_profiler(FALSE);
         $this->load->model('cuotas_mdl');
         $data = array();
         $data['cuotas'] = $this->cuotas_mdl->dameCuotasDeServicio($servicio_id, '*', 'AND c.id = '.$cuota_id);
         echo json_encode($data);
     }
 
-    // ANY facturas/create
-
+    // GET /facturas/create
     function create(){
 
         $servicio_id = (int) uri_assoc('servicio_id');
@@ -119,8 +123,63 @@ class Facturas extends BDO_Controller {
         $data['servicios'] = $this->servicios_mdl->get_active();
         $data['tipos_comprobante'] = $this->tipocomprobante_mdl->dameTiposFactura();
 
-        $this->output->enable_profiler();//Profiler
         $this->load->view('facturas/editar_factura', $data);
+    }
+
+    // POST /facturas/save
+    function save() {
+        if (!count($_POST)) {
+            redirect('facturas');
+        }
+
+        $this->form_validation->set_rules('factura_fecha_ingreso', 'Fecha de la factura', 'required');
+        $this->form_validation->set_rules('compania_id', 'Codigo de Compañia', 'required');
+        $this->form_validation->set_rules('factura_grupo_id', 'Grupo de facturas', 'required');
+        $this->form_validation->set_rules('moneda_id', 'Codigo de servicio', 'required');
+
+        if ($this->form_validation->run() == TRUE) {
+
+            //$data = $this->input->post();
+            // Note: Faltan mas campos por guardar y generar montos.
+            $data = array();
+            $data['fecha_registro'] = $this->input->post('factura_fecha_ingreso');
+            $data['cliente_id'] = $this->input->post('compania_id');
+            $data['factura_grupo_id'] = $this->input->post('factura_grupo_id');
+            $data['moneda_id'] = $this->input->post('moneda_id');
+
+            $change = $this->db->insert('factura', $data);
+            $factura_id = $this->db->insert_id();
+
+            if ($change) {
+                $this->session->set_flashdata('success_save', "Información actualizada correctamente");
+
+                $this->load->model('cuotas_mdl');
+
+                // Cuotas
+                $cuotas_array = $this->input->post('cuotas');
+                foreach ($cuotas_array as $cuota_id) {
+                    //$couta = $this->cuotas_mdl->dameCuotasDeServicio(null, '*', 'AND c.id = '.$cuota_id);
+                    $couta = $this->db->get_where('cuota', array('id' => $cuota_id) )->row();
+
+                    $data = array(
+                        'factura_id' => $factura_id,
+                        'cuota_id' => $couta->id,
+                        'moneda_id' => $couta->moneda_id,
+                        'monto' => $couta->monto
+                    );
+
+                    $change = $this->db->insert('cuota_factura', $data);
+                }
+
+            } else {
+                $this->session->set_flashdata('custom_warning', "Ocurrió un error al actualizar los datos ");
+            }
+            redirect('facturas');
+
+        } else {
+            $this->session->set_flashdata('custom_error', "La Información no fue actualizada");
+            //$this->load->view('facturas/editar_factura', $data);
+        }
     }
 
     /*

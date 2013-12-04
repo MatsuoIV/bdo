@@ -36,7 +36,10 @@
         
         <div class="content toggle">
 
+            <!--
             <form method="post" action="<?php echo site_url($this->uri->uri_string()); ?>">
+            -->
+            <form method="post" action="<?php echo site_url('facturas/save'); ?>">
                 <dl>
                     <dt><label>Fecha: </label></dt>
                     <dd><input id="datepicker" type="text" name="factura_fecha_ingreso" value="<?php echo date('m/d/Y'); ?>" /></dd>
@@ -161,7 +164,9 @@
 
                     // hardcoded
                     var td = "<tr>";
-                    td += "<td>"+ cuota.codigo +"</td>";
+                    td += "<td>";
+                    td += '<input type="hidden" name="cuotas[]" value="'+ cuota_id +'"/>';
+                    td += cuota.codigo +"</td>";
                     td += "<td>"+ cuota.fecha_registro +"</td>";
                     td += "<td>"+ cuota.monto +"</td>";
                     td += "<td>"+ cuota.saldo +"</td>";
