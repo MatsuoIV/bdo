@@ -6,7 +6,7 @@ class Facturas extends BDO_Controller {
 		parent::__construct();
 		$this->load->model('facturas_mdl');
 		$this->load->helper(array('text', 'bdo_app', 'form'));
-        $this->output->enable_profiler(); //Profiler
+        //$this->output->enable_profiler(); //Profiler
 	}
 
     // GET /facturas
@@ -202,7 +202,7 @@ class Facturas extends BDO_Controller {
             } else {
                 $this->session->set_flashdata('custom_warning', "Ocurrió un error al actualizar los datos ");
             }
-            //redirect('facturas');
+            redirect('facturas');
 
         } else {
             $this->session->set_flashdata('custom_error', "La Información no fue actualizada");
