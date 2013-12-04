@@ -1,0 +1,5 @@
+Por hacer:
+
+- Que se graben las facturas en la tabla "factura" y las relaciones entre factura y cuotas, en "cuota_factura".
+- Modificar opciones para editar, ver y eliminar facturas en la general (corregí la vista que no te dejaba ver facturas ingresadas).
+- Implementar un buscador de factura (cópiate cualquiera de los que están por ahí).
