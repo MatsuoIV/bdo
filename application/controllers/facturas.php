@@ -454,6 +454,45 @@ class Facturas extends BDO_Controller {
         $this->redir->redirect('facturas');
     }
 
+    // GET /facturas/search/$filters
+    function search() {
+        $params = array();
+        $cliente_id = ($this->input->get('cliente_id')) ? $this->input->get('cliente_id') : 0;
+        $fecha = ($this->input->get('fecha')) ? $this->input->get('fecha') : 0;
+
+        if ($cliente_id) {
+            $params = array_merge($params, array(
+                'factura.cliente_id' => $cliente_id
+            ));
+        }
+
+        if ($fecha) {
+            $datetime = date('Y-d-m', strtotime($fecha));
+            $params = array_merge($params, array(
+                'factura.fecha_registro' => $datetime
+            ));
+        }
+
+        $this->load->model('clientes_mdl');
+        $this->load->helper('search');
+
+        $query = array( 'where' =>  $params );
+        $facturas = $this->facturas_mdl->get($query);
+        //$clientes = $this->clientes_mdl->get_clientes();
+
+        $this->db->select('id, codigo, razonsocial');
+        $clientes = $this->db->get('cliente')->result();
+
+        $data = array(
+            'facturas'      =>  $facturas,
+            'sort_links'    =>  FALSE,
+            'clientes'      => $clientes,
+            'cliente_id'    => intval($cliente_id),
+            'fecha'         => $fecha,
+        );
+        $this->load->view('facturas/facturas_search', $data);
+    }
+
 }
 
 ?>

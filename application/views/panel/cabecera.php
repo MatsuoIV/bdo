@@ -45,7 +45,7 @@
     <a href="<?=base_url()?>">Facturación</a><ul>
                 <li><a href="<?=base_url()?>index.php/facturas">Ver facturas</a></li>
                 <li><a href="<?=base_url()?>index.php/facturas/create">Crear factura</a></li>
-                <li><a href="<?=base_url()?>">Buscador de factura</a></li>
+                <li><a href="<?=base_url()?>index.php/facturas/search">Buscador de factura</a></li>
                 <li><a href="<?=base_url()?>index.php/items">Items de factura</a></li>                
             </ul>
     </li>
