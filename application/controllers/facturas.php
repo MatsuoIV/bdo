@@ -58,7 +58,7 @@ class Facturas extends BDO_Controller {
 
         $data = array(
             'facturas'		=>	$facturas,
-            'sort_links'	=>	FALSE, // NO LO ACTIVES!, no hay coherencia con los filtros.
+            'sort_links'	=>	FALSE, // NO ACTIVAR! No hay coherencia con los filtros.
         );
         $this->load->view('facturas/facturas_list', $data);
     }
@@ -133,51 +133,76 @@ class Facturas extends BDO_Controller {
             redirect('facturas');
         }
 
+        $this->load->helper('date');
+
         $this->form_validation->set_rules('factura_fecha_ingreso', 'Fecha de la factura', 'required');
         $this->form_validation->set_rules('compania_id', 'Codigo de Compañia', 'required');
         $this->form_validation->set_rules('factura_grupo_id', 'Grupo de facturas', 'required');
         $this->form_validation->set_rules('moneda_id', 'Codigo de servicio', 'required');
+        $this->form_validation->set_rules('moneda_id', 'Codigo de servicio', 'required');
 
         if ($this->form_validation->run() == TRUE) {
 
-            //$data = $this->input->post();
             // Note: Faltan mas campos por guardar y generar montos.
             $data = array();
-            $data['fecha_registro'] = $this->input->post('factura_fecha_ingreso');
-            $data['cliente_id'] = $this->input->post('compania_id');
-            $data['factura_grupo_id'] = $this->input->post('factura_grupo_id');
-            $data['moneda_id'] = $this->input->post('moneda_id');
+            $factura_fecha_ingreso = $this->input->post('factura_fecha_ingreso');
+
+            $data['fecha_registro'] = date('Y-m-d H:i:s', strtotime($factura_fecha_ingreso));
+            $data['fecha_emision'] = date('Y-m-d H:i:s', strtotime($factura_fecha_ingreso));
+            // fecha_vencimiento ?
+            // montos
             $data['factura_estado_id'] = 1; //factura_estado_id
+            // item_id ?
+            $data['factura_grupo_id'] = $this->input->post('factura_grupo_id');
             $data['tipocomprobante_id'] = 1; // Mira la tabla: tipocomprobante
+            $data['personal_id'] = $this->session->userdata('id');
+            $data['moneda_id'] = $this->input->post('moneda_id');
+            $data['cliente_id'] = $this->input->post('compania_id');
 
             $change = $this->db->insert('factura', $data);
             $factura_id = $this->db->insert_id();
 
             if ($change) {
-                $this->session->set_flashdata('success_save', "Información actualizada correctamente");
-
                 $this->load->model('cuotas_mdl');
 
-                // Cuotas
                 $cuotas_array = $this->input->post('cuotas');
+
+                $monto_subtotal = 0;
+
                 foreach ($cuotas_array as $cuota_id) {
-                    //$couta = $this->cuotas_mdl->dameCuotasDeServicio(null, '*', 'AND c.id = '.$cuota_id);
                     $couta = $this->db->get_where('cuota', array('id' => $cuota_id) )->row();
 
                     $data = array(
-                        'factura_id' => $factura_id,
-                        'cuota_id' => $couta->id,
+                        'factura_id'=> $factura_id,
+                        'cuota_id'  => $couta->id,
                         'moneda_id' => $couta->moneda_id,
-                        'monto' => $couta->monto
+                        'monto'     => $couta->monto
                     );
 
-                    $change = $this->db->insert('cuota_factura', $data);
+                    $insert = $this->db->insert('cuota_factura', $data);
+                    $monto_subtotal += $couta->monto;
                 }
+
+                $igv = $this->db->get_where('impuesto', array('nombre' => 'IGV') )->row();
+
+                $monto_impuesto = $monto_subtotal * ($igv->porcentaje);
+                $monto_total = $monto_subtotal + $monto_impuesto;
+
+                $data = array(
+                    'monto_subtotal' => $monto_subtotal,
+                    'monto_impuesto' => $monto_impuesto,
+                    // 'monto_pagado' => 0,
+                    'monto_total' => $monto_total,
+                );
+
+                $update = $this->db->update('factura', $data, array('id' => $factura_id));
+
+                $this->session->set_flashdata('success_save', "Información actualizada correctamente");
 
             } else {
                 $this->session->set_flashdata('custom_warning', "Ocurrió un error al actualizar los datos ");
             }
-            redirect('facturas');
+            //redirect('facturas');
 
         } else {
             $this->session->set_flashdata('custom_error', "La Información no fue actualizada");

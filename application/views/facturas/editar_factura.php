@@ -170,8 +170,8 @@
                     td += "<td>"+ cuota.fecha_registro +"</td>";
                     td += "<td>"+ cuota.monto +"</td>";
                     td += "<td>"+ cuota.saldo +"</td>";
-                    td += "<td>"+ cuota.saldo +"</td>";
-                    td += "<td>"+ cuota.saldo +"</td>";
+                    td += "<td>"+ cuota.monto +"</td>";
+                    td += "<td>"+ "" +"</td>";
                     td += "</tr>";
                     jQuery("#tabla_factura_cuota").append(td);
 
