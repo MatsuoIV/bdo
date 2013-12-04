@@ -129,7 +129,7 @@
         jQuery('#servicio_id').change(function(e){
             //return;
             var servicio_id = jQuery(this).val();
-            jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio')?>/"+servicio_id, function(res){
+            jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio'); ?>/"+servicio_id, function(res){
                 if(res.cuotas && res.cuotas.length){                    
                     var options = '', cuota;
                     for(var i=0; i< res.cuotas.length; i++){
@@ -145,10 +145,27 @@
         }).trigger('change');
 
         jQuery('#agregar_cuota').click(function(e){
-            var servicio_id = jQuery(this).val();
-            jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio')?>/"+servicio_id, function(res{
-                  //res.cuotas;
-            }))
+            //var servicio_id = jQuery(this).val();
+            var servicio_id = jQuery("#servicio_id").val();
+            jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio'); ?>/"+servicio_id, function(data){
+                //console.log(data.cuotas);
+                if(data.cuotas && data.cuotas.length) {
+
+                    // hardcoded
+                    var td = "<tr>";
+                    td += "<td> SERVICIO ACA! </td>";
+                    td += "<td> SERVICIO ACA! </td>";
+                    td += "<td> SERVICIO ACA! </td>";
+                    td += "<td> SERVICIO ACA! </td>";
+                    td += "<td> SERVICIO ACA! </td>";
+                    td += "<td> SERVICIO ACA! </td>";                    
+                    td += "</tr>";
+                    jQuery("#tabla_factura_cuota").append(td);
+
+
+
+                }// data
+            });
             e.preventDefault();
         });
     });

@@ -74,7 +74,7 @@ class Facturas extends BDO_Controller {
         echo json_encode($data);
     }
 
-   /* function create(){
+    function create(){
 
         $servicio_id = (int) uri_assoc('servicio_id');
 
@@ -117,10 +117,11 @@ class Facturas extends BDO_Controller {
         $data['servicios'] = $this->servicios_mdl->get_active();
         $data['tipos_comprobante'] = $this->tipocomprobante_mdl->dameTiposFactura();
 
+        $this->output->enable_profiler();//Profiler
         $this->load->view('facturas/editar_factura', $data);
-    }*/
+    }
 
-    
+    /*
     function create() {
         if ($this->input->post('btn_cancel')) {
             redirect('facturas');
@@ -163,6 +164,7 @@ class Facturas extends BDO_Controller {
             redirect('facturas/edit/factura_id/'.$factura_id);
         }
     }
+    */
 
     function edit() {
         $tab_index = ($this->session->flashdata('tab_index')) ? $this->session->flashdata('tab_index') : 0;

@@ -86,6 +86,11 @@ class Cuotas_mdl extends MY_Model {
 			INNER JOIN cliente AS cl ON cl.id=s.cliente_id
 			WHERE monto > saldo AND saldo >0")->result_array();
 	} */
+
+	function get_counta_json($number) {
+		$sql
+	}
+
 }
 
 ?>
