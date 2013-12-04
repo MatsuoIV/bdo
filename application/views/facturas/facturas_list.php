@@ -1,4 +1,5 @@
 <?php $this->load->view('panel/cabecera'); ?>
+<?php $this->load->view('panel/jquery_confirmacion'); ?>
 
 <div class="grid_10" id="content_wrapper">
 	<div class="section_wrapper">

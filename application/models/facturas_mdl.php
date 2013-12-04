@@ -44,7 +44,8 @@ class Facturas_mdl extends MY_Model {
     public function __construct() {
         parent::__construct();
         $this->table_name = 'factura';
-        $this->primary_key = 'factura.id';
+        //$this->primary_key = 'factura.id';
+        $this->primary_key = 'factura.factura_id';
         //$this->order_by = 'factura.factura_fecha_ingreso DESC, factura.factura_id DESC';
         $this->order_by = 'factura.fecha_registro DESC, factura.id DESC';
         $this->select_fields = 

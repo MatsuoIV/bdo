@@ -246,7 +246,8 @@ class Facturas extends BDO_Controller {
         $this->load->helper('text');
         $params = array(
             'where'	=>	array(
-                'factura.factura_id'	=>	uri_assoc('factura_id')
+                //'factura.factura_id'	=>	uri_assoc('factura_id')
+                'factura.id'    =>  uri_assoc('factura_id')
             )
         );
         $factura= $this->facturas_mdl->get($params);      
@@ -418,10 +419,15 @@ class Facturas extends BDO_Controller {
         }
     }
 
-
-
-
-
+    // ANY /facturas/delete/factura_id/$factura_id
+    function delete() {
+        if (uri_assoc('factura_id')) {
+            $factura_id = intval(uri_assoc('factura_id'));
+            $this->facturas_mdl->delete( array('id'=> $factura_id) );
+            $this->db->delete('cuota_factura', array('factura_id' => $factura_id) );
+        }
+        $this->redir->redirect('facturas');
+    }
 
 }
 
