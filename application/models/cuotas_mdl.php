@@ -87,15 +87,6 @@ class Cuotas_mdl extends MY_Model {
 			WHERE monto > saldo AND saldo >0")->result_array();
 	} */
 
-	function get_counta_json($number) {
-		/*
-		SELECT cuota.*, servicios.codigo
-		FROM cuota, servicios
-		WHERE cuota.servicio_id = servicios.id
-		AND cuota.id = ?
-		*/
-	}
-
 }
 
 ?>
