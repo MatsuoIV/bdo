@@ -88,7 +88,12 @@ class Cuotas_mdl extends MY_Model {
 	} */
 
 	function get_counta_json($number) {
-		$sql
+		/*
+		SELECT cuota.*, servicios.codigo
+		FROM cuota, servicios
+		WHERE cuota.servicio_id = servicios.id
+		AND cuota.id = ?
+		*/
 	}
 
 }
