@@ -70,9 +70,11 @@ class Facturas extends BDO_Controller {
     function cuota_especifica($servicio_id = 0, $cuota_id = 0){
         $this->load->model('cuotas_mdl');
         $data = array();
-        $data['cuotas'] = $this->cuotas_mdl->dameCuotasDeServicio($servicio_id, '*', 'AND id = '.$cuota_id);
+        $data['cuotas'] = $this->cuotas_mdl->dameCuotasDeServicio($servicio_id, '*', 'AND c.id = '.$cuota_id);
         echo json_encode($data);
     }
+
+    // ANY facturas/create
 
     function create(){
 

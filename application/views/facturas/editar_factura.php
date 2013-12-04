@@ -129,11 +129,14 @@
         jQuery('#servicio_id').change(function(e){
             //return;
             var servicio_id = jQuery(this).val();
+
+            $('#cuota_id').find('option').remove();
+
             jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio'); ?>/"+servicio_id, function(res){
                 if(res.cuotas && res.cuotas.length){                    
                     var options = '', cuota;
                     for(var i=0; i< res.cuotas.length; i++){
-                        cuota = res.cuotas[i];                        
+                        cuota = res.cuotas[i];
                         options += '<option value="'+cuota.id+'" data-monto="'+cuota.monto+'" data-saldo="'+cuota.saldo+'" data-fecha="'+cuota.fecha+'">'+cuota.fecha+' - '+cuota.saldo+'</option>';
                     }
                     $('#cuota_id').append(options);
@@ -147,22 +150,25 @@
         jQuery('#agregar_cuota').click(function(e){
             //var servicio_id = jQuery(this).val();
             var servicio_id = jQuery("#servicio_id").val();
-            jQuery.getJSON("<?php echo site_url('facturas/cuotas_de_servicio'); ?>/"+servicio_id, function(data){
-                //console.log(data.cuotas);
+            var cuota_id = jQuery("#cuota_id").val();
+
+            jQuery.getJSON("<?php echo site_url('facturas/cuota_especifica'); ?>/"+servicio_id+"/"+cuota_id, function(data){
+
                 if(data.cuotas && data.cuotas.length) {
+
+                    cuota = data.cuotas[0];
+                    //console.log(cuota);
 
                     // hardcoded
                     var td = "<tr>";
-                    td += "<td> SERVICIO ACA! </td>";
-                    td += "<td> SERVICIO ACA! </td>";
-                    td += "<td> SERVICIO ACA! </td>";
-                    td += "<td> SERVICIO ACA! </td>";
-                    td += "<td> SERVICIO ACA! </td>";
-                    td += "<td> SERVICIO ACA! </td>";                    
+                    td += "<td>"+ cuota.codigo +"</td>";
+                    td += "<td>"+ cuota.fecha_registro +"</td>";
+                    td += "<td>"+ cuota.monto +"</td>";
+                    td += "<td>"+ cuota.saldo +"</td>";
+                    td += "<td>"+ cuota.saldo +"</td>";
+                    td += "<td>"+ cuota.saldo +"</td>";
                     td += "</tr>";
                     jQuery("#tabla_factura_cuota").append(td);
-
-
 
                 }// data
             });
